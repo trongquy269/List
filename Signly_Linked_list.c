@@ -26,7 +26,7 @@ void Create_list(LIST *l)
 }
 
 //Tạo ra 1 cái node
-NODE *Add_node(LIST *l, int value)
+NODE *Add_node(int value)
 {
     NODE *p = (NODE*)malloc(sizeof(NODE));  //Khởi tạo 1 node p
     if (p == NULL)
@@ -94,7 +94,7 @@ void Insert_node(LIST *l, NODE *p, int locate)
             {
                 //Khởi tạo biến tạm chèn thay thế cho p
                 //Fix chèn nhiều số giống nhau
-                NODE *temp = Add_node(l, p->data);
+                NODE *temp = Add_node(p->data);
                 temp->pNext = i->pNext; //Cho con trỏ node tạm trỏ đến node sau i
                 i->pNext = temp;    //Cho con trỏ node sau i trỏ đến node tạm
                 i = i->pNext;   //Cho i tăn lên
@@ -253,7 +253,7 @@ int main()
         printf("\nNhap gia tri thu %d: ", i);
         int value;
         scanf("%d", &value);
-        NODE *p = Add_node(l, value);
+        NODE *p = Add_node(value);
         Insert_node_tail(l, p);
     }
     printf("\nDanh sach vua nhap la: ");
