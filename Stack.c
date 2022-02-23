@@ -44,9 +44,9 @@ NODE *Add_Node(int data)
 }
 
 // Hàm kiểm tra Stack rỗng
-int IsEmpty(STACK *s)
+int IsEmpty(STACK s)
 {
-    if (s->Top == NULL) // Nếu node đỉnh rỗng
+    if (s.Top == NULL) // Nếu node đỉnh rỗng
     {
         return 1;   // Trả về giá trị true
     }
@@ -60,7 +60,7 @@ int IsEmpty(STACK *s)
 void Push(STACK *s, NODE *p)
 {
     // Nếu danh sách rỗng thì node đỉnh bằng node thêm vào
-    if (IsEmpty(s) == 1)
+    if (IsEmpty(*s) == 1)
     {
         s->Top = p;
     }
@@ -76,7 +76,7 @@ void Push(STACK *s, NODE *p)
 int Pop(STACK *s)
 {
     // Nếu danh sách rỗng thì in ra thông báo
-    if (IsEmpty(s) == 1)
+    if (IsEmpty(*s) == 1)
     {
         printf("The stack is empty!\n");
     }
@@ -94,7 +94,7 @@ int Pop(STACK *s)
 int Top(STACK s)
 {
     // Nếu danh sách rỗng thì in ra thông báo
-    if (IsEmpty(&s) == 1)
+    if (IsEmpty(s) == 1)
     {
         printf("The stack is empty!\n");
     }
@@ -130,26 +130,8 @@ int main()
         NODE *p = Add_Node(value);
         Push(s, p);
     }
-    printf("\nPhan tu dinh cua stack la: %d", Top(*s));
-    if (IsEmpty(s) == 1)
-    {
-        printf("\nDanh sach rong!");
-    }
-    else
-    {
-        printf("\nDanh sach con phan tu");
-    }
-    printf("\nLay phan tu o dinh: %d", Pop(s));
-    printf("\n");
-    if (IsEmpty(s) == 1)
-    {
-        printf("\nDanh sach rong!");
-    }
-    else
-    {
-        printf("\nDanh sach vua nhap la: ");
-        OutPut(*s);
-    }
+    printf("\nDanh sach vua nhap la: ");
+    OutPut(*s);
     printf("\n");
     return 0;
 }
