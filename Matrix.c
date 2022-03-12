@@ -194,20 +194,57 @@ int Check_matrix(MATRIX *m)
     }
 }
 
-int Det_A_temp(MATRIX *m)
+float Det_A_temp(MATRIX *m)
 {
     if (m->row = 2)
     {
-        return ((m->M[0][0] * m->M[1][1]) - (m->M[1][0] * m->M[0][1]));
+        float kq = 1;
+        for (int i = 0; i < m->row; i++)
+        {
+            kq *= m->M[i][i];
+        }
+        return kq;
     }
     else
     {
         MATRIX *temp = (MATRIX *)malloc(sizeof(MATRIX));
-        float a;
+        temp->row = m->row -1;
+        float a = 1;
+        int row = 0;
+        int column = 0;
+        for (int i = 0; i < m->row; i++)
+        {
+            for (int j = 0; j < m->row; j++)
+            {
+                for (int k = 0; k < m->row; k++)
+                {
+                    if ((j == i) || (k == i))
+                    {
+
+                    }
+                    else
+                    {
+                        temp->M[row][column] = m->M[j][k];
+                        row++;
+                        column++;
+                    }
+                }
+            }
+            if (i % 2 == 0)
+            {
+                a *= m->M[0][i] * Det_A_temp(temp);
+            }
+            else
+            {
+                a *= m->M[0][i] * Det_A_temp(temp) * (-1);
+            }
+        }
+        free(temp);
+        return a;
     }
 }
 
-int Det_A(MATRIX *m)
+float Det_A(MATRIX *m)
 {
     if (m->row != m->column)
     {
@@ -307,11 +344,16 @@ int Det_A(MATRIX *m)
         }
         if (Check_matrix(m) != 0)
         {
-            return 0;
+            float kq = 1;
+            for (int i = 0; i < m->row; i++)
+            {
+                kq *= m->M[i][i];
+            }
+            return kq;
         }
         else
         {
-
+            return Det_A_temp(m);
         }
     }
 }
@@ -524,7 +566,7 @@ void Menu()
                 system("cls");
                 printf("Ma tran:\n");
                 Output(*m);
-                printf("\nDet A = %d\n", Det_A(m));
+                printf("\nDet A = %.2f\n", Det_A(m));
             } break;
             case 0:
             {
