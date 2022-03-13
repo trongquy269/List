@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 500
+#define MAX 500 // Ma trận chứa tối đa 500 x 500 phần tử
 
+// Khai báo cấu trúc ma trận
+// Gồm 2 số nguyên row và column để quản lí số dòng và số cột
+// Và mảng 2 chiều M[][] để lưu giá trị của ma trận
 typedef struct
 {
     int row;
@@ -10,18 +13,26 @@ typedef struct
     float M[MAX][MAX];
 } MATRIX;
 
+// Hàm tính tổng 2 ma trận
+// Thông số truyền vào gồm 2 con trỏ quản lí 2 ma trận riêng biệt
 int Plus_2_matrix(MATRIX *m, MATRIX *n)
 {
+    // Phép cộng được thực hiện khi 2 ma trận m và n cùng cấp
+    // ROW m = ROW n, COLUMN m = COLUMN n
     if ((m->row == n->row) && (m->column == n->column))
     {
+        // Loop chạy hết từng phần tử trong 2 mảng và thực hiện cộng lại với nhau
         for (int i = 0; i < m->row; i++)
         {
             for (int j = 0; j < m->column; j++)
             {
+                // Kết quá cộng được lưu vào mảng do con trỏ *m quản lí
                 m->M[i][j] += n->M[i][j];
             }
         }
     }
+    // Nếu không thỏa điều kiện của phép cộng
+    // In ra thông báo
     else
     {
         printf("\n2 matrix are not of the same level!");
@@ -44,18 +55,26 @@ int Plus_2_matrix(MATRIX *m, MATRIX *n)
     }
 }
 
+// Hàm tính hiệu 2 ma trận
+// Thông số truyền vào gồm 2 con trỏ quản lí 2 ma trận riêng biệt
 int Subtract_2_matrix(MATRIX *m, MATRIX *n)
 {
+    // Phép trừ được thực hiện khi 2 ma trận m và n cùng cấp
+    // ROW m = ROW n, COLUMN m = COLUMN n
     if ((m->row == n->row) && (m->column == n->column))
     {
+        // Loop chạy hết từng phần tử trong 2 mảng và thực hiện trừ với nhau
         for (int i = 0; i < m->row; i++)
         {
             for (int j = 0; j < m->column; j++)
             {
+                // Kết quá trừ được lưu vào mảng do con trỏ *m quản lí
                 m->M[i][j] -= n->M[i][j];
             }
         }
     }
+    // Nếu không thỏa điều kiện của phép trừ
+    // In ra thông báo
     else
     {
         printf("\n2 matrix are not of the same level!");
@@ -78,34 +97,53 @@ int Subtract_2_matrix(MATRIX *m, MATRIX *n)
     }
 }
 
+// Phép nhân 1 số với ma trận
+// Thông số truyền vào là 1 ma trận do con trỏ *m quản lí và 1 số
 void Multiply_aNumber(MATRIX *m, float x)
 {
+    // Loop chạy hết từng phần tử trong mảng
+    // Và thực hiện nhân từng phần tử trong mảng với số đã truyền vào
     for (int i = 0; i < m->row; i++)
     {
         for (int j = 0; j < m->column; j++)
         {
+            // Kết quá trừ được lưu vào mảng do con trỏ *m quản lí
             m->M[i][j] *= x;
         }
     }
 }
 
+// Phép nhân 2 mà trận
+// Thông số truyền vào là 2 ma trận do con trỏ *m và *n quản lí
 int Multiply_2_matrix(MATRIX *m, MATRIX *n)
 {
+    // Điều kiện để thực hiện phép nhân 2 ma trận
+    // ROW m = COLUMN n
     if (m->row  == n->column)
     {
+        // Khai báo 1 biến con trỏ *temp có kiểu dữ liệu MATRIX (cùng kiểu với 2 mảng truyền vào)
+        // Mảng do con trỏ *temp quản lí có RƠW temp = ROW m, COLUMN temp = COLUMN n
         MATRIX *temp = (MATRIX *)malloc(sizeof(MATRIX));
         temp->row = m->row;
         temp->column = n->column;
+        // Loop 1: duyêt hết tất cả dòng của ma trận do con trỏ *m quản lí
         for (int i = 0; i < m->row; i++)
         {
+            // Loop 2: duyệt hết tất cả cột của ma trận do con trỏ *n quản lí
             for (int k = 0; k < n->column; k++)
             {
+                // Loop 3: duyệt hết tất cả cột của ma trận do con trỏ *m quản lí
                 for (int j = 0; j < m->column; j++)
                 {
+                    // Do mảng do con trỏ *temp quản lí có RƠW temp = ROW m, COLUMN temp = COLUMN n
+                    // Nên 2 giá trị bên trong mảng 2 chiều là i và k
+                    // (temp)i,j = Tổng các phần tử Hi(m) * Cj(n) tương ứng
+                    // (Hi là hàng thứ i, Cj là cột thứ j)
                     temp->M[i][k] += m->M[i][j] * n->M[j][k];
                 }
             }
         }
+        // Kết quá trừ được lưu vào mảng do con trỏ *m quản lí
         m->row = temp->row;
         m->column = temp->column;
         for (int i = 0; i < m->row; i++)
@@ -116,6 +154,8 @@ int Multiply_2_matrix(MATRIX *m, MATRIX *n)
             }
         }
     }
+    // Nếu không thỏa điều kiện của phép trừ
+    // In ra thông báo
     else
     {
         printf("\n2 matrix are not of the same level!");
@@ -196,50 +236,69 @@ int Check_matrix(MATRIX *m)
 
 float Det_A_temp(MATRIX *m)
 {
-    if (m->row = 2)
+    if (m->row == 2)
     {
-        float kq = 1;
-        for (int i = 0; i < m->row; i++)
-        {
-            kq *= m->M[i][i];
-        }
-        return kq;
+        return ((m->M[0][0] * m->M[1][1]) - (m->M[1][0] * m->M[0][1]));
     }
     else
     {
-        MATRIX *temp = (MATRIX *)malloc(sizeof(MATRIX));
-        temp->row = m->row -1;
-        float a = 1;
-        int row = 0;
-        int column = 0;
+        float a = 0;
         for (int i = 0; i < m->row; i++)
         {
-            for (int j = 0; j < m->row; j++)
+            MATRIX *temp = (MATRIX *)malloc(sizeof(MATRIX));
+            temp->row = m->row -1;
+            temp->column = m->row - 1;
+            int row = 0;
+            int column = 0;
+            for (int j = 1; j < m->row; j++)
             {
                 for (int k = 0; k < m->row; k++)
                 {
-                    if ((j == i) || (k == i))
+                    if (i != m->row - 1)
                     {
-
+                        if (k != i)
+                        {
+                            temp->M[row][column] = m->M[j][k];
+                            column++;
+                        }
+                        if (k == m->row - 1)
+                        {
+                            column = 0;
+                        }
+                        if ((column == 0) && (k != i))
+                        {
+                            row++;
+                        }
                     }
                     else
                     {
-                        temp->M[row][column] = m->M[j][k];
-                        row++;
-                        column++;
+                        if (k != i)
+                        {
+                            temp->M[row][column] = m->M[j][k];
+                            column++;
+                        }
+                        if (k == m->row - 1)
+                        {
+                            column = 0;
+                        }
+                        if ((column == 0) && (k == i))
+                        {
+                            row++;
+                        }
                     }
+                    
                 }
             }
-            if (i % 2 == 0)
-            {
-                a *= m->M[0][i] * Det_A_temp(temp);
-            }
-            else
-            {
-                a *= m->M[0][i] * Det_A_temp(temp) * (-1);
-            }
+            // if (i % 2 == 0)
+            // {
+            //     a += m->M[0][i] * Det_A_temp(temp);
+            // }
+            // else
+            // {
+            //     a += m->M[0][i] * Det_A_temp(temp) * (-1);
+            // }
+            free(temp);
         }
-        free(temp);
         return a;
     }
 }
