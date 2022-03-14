@@ -164,24 +164,37 @@ int Multiply_2_matrix(MATRIX *m, MATRIX *n)
     }
 }
 
+/*
+Hàm kiểm tra ma trận tam giác, ma trận đường chéo
+- Ma trận tam giác trên là ma trận vuông có mọi phần tử nằm phía dưới đường chéo chính bằng 0
+- Ma trận tam giác trên là ma trận vuông có mọi phần tử nằm phía trên đường chéo chính bằng 0
+- Ma trận đường chéo là ma trận vuông có mọi phần tử nằm ngoài đường chéo chính bằng 0
+Thông số truyền vào là ma trận do con trỏ *m quản lí
+*/
 int Check_matrix(MATRIX *m)
 {
+    // Ma trận vuông có số hàng ROW = số cột COLUMN
     if (m->row != m->column)
     {
         return 0;
     }
     else
     {
-        int check_above = 1;
-        int check_under = 1;
+        int check_above = 1; // Biến kiểm tra ma trận trên
+        int check_under = 1; // Biến kiểm tra ma trận dưới
+        // Loop duyệt hết các phần tử phía dưới đường chéo chính trong ma trận
         for (int i = 1; i < m->row; i++)
         {
             for (int j = 0; j < i; j++)
             {
+                // Nếu các phần tử bên dưới đường chéo chính == 0
+                // Gán biến check_above = 1
                 if (m->M[i][j] == 0)
                 {
                     check_above = 1;
                 }
+                // Ngược lại có 1 phần tử bất kì nào bên dưới đường chéo chính != 0
+                // break khỏi loop
                 else
                 {
                     check_above = 0;
@@ -193,14 +206,19 @@ int Check_matrix(MATRIX *m)
                 break;
             }
         }
+        // Loop duyệt hết các phần tử phía trên đường chéo chính trong ma trận
         for (int i = 0; i < m->row - 1; i++)
         {
             for (int j = m->row; j > i + 1; j--)
             {
+                // Nếu các phần tử bên trên đường chéo chính == 0
+                // Gán biến check_under = 1
                 if (m->M[i][j] == 0)
                 {
                     check_under = 1;
                 }
+                // Ngược lại có 1 phần tử bất kì nào bên trên đường chéo chính != 0
+                // break khỏi loop
                 else
                 {
                     check_under = 0;
@@ -212,6 +230,12 @@ int Check_matrix(MATRIX *m)
                 break;
             }
         }
+        /*
+        - return 0 nếu không phải ma trận tam giác
+        - return 1 nếu là ma trận tam giác trên
+        - return 2 nếu là ma trận tam giác dưới
+        - return 3 nếu là ma trận đường chéo
+        */
         if ((check_above + check_under) == 2)
         {
             return 3;
@@ -234,6 +258,7 @@ int Check_matrix(MATRIX *m)
     }
 }
 
+// Hàm con để thực hiện tính toán cho hàm Det_A()
 float Det_A_temp(MATRIX *m)
 {
     if (m->row == 2)
@@ -303,8 +328,11 @@ float Det_A_temp(MATRIX *m)
     }
 }
 
+// Hàm tính Determinant của ma trận
+// Thông số truyền vào là 1 mảng do con trỏ *m quản lí
 float Det_A(MATRIX *m)
 {
+    // Điểu kiện để tính định thức là ma trận phải là ma trận vuông
     if (m->row != m->column)
     {
         printf("\nError matrix! ROW is not equal to COLUMN");
@@ -312,11 +340,15 @@ float Det_A(MATRIX *m)
     }
     else
     {
-        int check;
+        int check; // Khởi tạo biến check để kiểm tra
+    // Loop duyệt mọi phần tử trong ma trận
+        // Loop 1 kiểm tra có 1 hàng == 0
         for (int i = 0; i < m->row; i++)
         {
             for (int j = 0; j < m->column; j++)
             {
+                // check = 1 nếu có phần tử trong hàng == 1
+                // nếu có phần tử trong hàng != 0 => check == 0 và break chuyển sang hàng kế tiếp
                 if (m->M[i][j] == 0)
                 {
                     check = 1;
@@ -327,15 +359,20 @@ float Det_A(MATRIX *m)
                     break;
                 }
             }
+            // Nếu có 1 hàng mà mọi phần tử trong hàng đều == 0
+            // Thì trả về giá trị 0 cho hàm <=> Det A = 0
             if (check == 1)
             {
                 return 0;
             }
         }
+        // Loop 2 kiểm tra có 1 cột == 0
         for (int i = 0; i < m->column; i++)
         {
             for (int j = 0; j < m->row; j++)
             {
+                // check = 1 nếu có phần tử trong cột == 1
+                // nếu có phần tử trong cột != 0 => check == 0 và break chuyển sang cột kế tiếp
                 if (m->M[j][i] == 0)
                 {
                     check = 1;
@@ -346,61 +383,89 @@ float Det_A(MATRIX *m)
                     break;
                 }
             }
+            // Nếu có 1 cột mà mọi phần tử trong cột đều == 0
+            // Thì trả về giá trị 0 cho hàm <=> Det A = 0
             if (check == 1)
             {
                 return 0;
             }
         }
+        // Loop 3 kiểm tra 2 hàng tỉ lệ nhau
         for (int i = 0; i < m->row - 1; i++)
         {
-            int a = m->M[i][0];
+            // Khởi tạo biến a nhận giá trị đầu tiên của hàng đang xét
+            // Biến này sẽ được chia với biến b nhận giá trị đầu tiên của hàng khác để lấy tỉ lệ
+            float a = m->M[i][0];
+            // Loop duyệt các hàng khác hàng đang xét (hàng so sánh)
             for (int k = i + 1; k < m->row; k++)
             {
+                // Khởi tạo biến b nhận giá trị đầu tiên của hàng khác
                 int b = m->M[k][0];
-                float kq = (float)a/b;
+                float kq = (float)a/b; // Chia lấy tỉ lệ
                 for (int j = 0; j < m->row; j++)
                 {
+                    // Nếu phần tử i,j tại hàng đang xét chia tỉ lệ
+                    // Bằng với phần tử k,j tại hàng so sánh
+                    // Thì cho biến kiểm tra check = 1;
                     if ((m->M[i][j] / kq) == m->M[k][j])
                     {
                         check = 1;
                     }
+                    // Nếu có bất kì phần tử tương ứng nào không tỉ lệ
+                    // Cho biến check = 0 và break để qua hàng so sánh kế tiếp
                     else
                     {
                         check = 0;
                         break;
                     }
                 }
+                // Nếu có 2 hàng tỉ lệ với nhau
+                // Thì trả về giá trị 0 cho hàm <=> Det A = 0
                 if (check == 1)
                 {
                     return 0;
                 }
             }
         }
+        // Loop 4 kiểm tra 2 cột tỉ lệ nhau
         for (int i = 0; i < m->row - 1; i++)
         {
-            int a = m->M[0][i];
+            // Khởi tạo biến a nhận giá trị đầu tiên của cột đang xét
+            // Biến này sẽ được chia với biến b nhận giá trị đầu tiên của cột khác để lấy tỉ lệ
+            float a = m->M[0][i];
+            // Loop duyệt các cột khác cột đang xét (hàm so sánh)
             for (int k = i + 1; k < m->row; k++)
             {
+                // Khởi tạo biến b nhận giá trị đầu tiên của hàng khác
                 int b = m->M[0][k];
-                float kq = (float)a/b;
+                float kq = (float)a/b; // Chia lấy tỉ lệ
                 for (int j = 0; j < m->row; j++)
                 {
+                    // Nếu phần tử i,j tại cột đang xét chia tỉ lệ
+                    // Bằng với phần tử k,j tại cột so sánh
+                    // Thì cho biến kiểm tra check = 1;
                     if ((m->M[j][i] / kq) == m->M[j][k])
                     {
                         check = 1;
                     }
+                    // Nếu có bất kì phần tử tương ứng nào không tỉ lệ
+                    // Cho biến check = 0 và break để qua cột so sánh kế tiếp
                     else
                     {
                         check = 0;
                         break;
                     }
                 }
+                // Nếu có 2 hàng tỉ lệ với nhau
+                // Thì trả về giá trị 0 cho hàm <=> Det A = 0
                 if (check == 1)
                 {
                     return 0;
                 }
             }
         }
+        // Kiểm tra là ma trận tam giác
+        // Nếu là ma trận tam giác thì Det A = tích cả phần tử của đường chéo chính
         if (Check_matrix(m) != 0)
         {
             float kq = 1;
@@ -410,6 +475,7 @@ float Det_A(MATRIX *m)
             }
             return kq;
         }
+        // Nếu không phải các trường hợp trên thì chuyển qua hàm Det_A_temp() để thực hiện tính toán
         else
         {
             return Det_A_temp(m);
