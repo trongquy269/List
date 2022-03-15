@@ -314,14 +314,21 @@ float Det_A_temp(MATRIX *m)
                     
                 }
             }
-            // if (i % 2 == 0)
-            // {
-            //     a += m->M[0][i] * Det_A_temp(temp);
-            // }
-            // else
-            // {
-            //     a += m->M[0][i] * Det_A_temp(temp) * (-1);
-            // }
+            /*
+            Do hàm luôn chọn hàng 1 để tính
+            Nên |A| = a(1,1)*(-1)^(1+1)*|M(1,1)| + a(1,2)*(-1)^(1+2)*|M(1,2)| +...+ a(1,n)*(-1)^(1+n)*|M(1,n)|
+            Với |M(1,n)| là ma trận còn lại khi đã lượt bỏ đi hàng 1 cột n
+            Vậy suy ra cột 1 sẽ nhân với 1 và cột 2 sẽ nhân với trừ 1
+            => Cột 0 -> n - 1 khi cột chẵn sẽ nhân với 1 và cột lẻ sẽ nhân với -1
+            */
+            if (i % 2 == 0)
+            {
+                a += m->M[0][i] * Det_A_temp(temp);
+            }
+            else
+            {
+                a += m->M[0][i] * Det_A_temp(temp) * (-1);
+            }
             free(temp);
         }
         return a;
@@ -479,6 +486,28 @@ float Det_A(MATRIX *m)
         else
         {
             return Det_A_temp(m);
+        }
+    }
+}
+
+// Hàm khởi tạo ma trận đơn vị cấp n, kí hiệu I(n)
+// Là ma trận vuông cấp n có mọi phần tử tại đường chéo chính == 1, ngoài đường chéo chính == 0
+void Init_matrix_In(MATRIX *m)
+{
+    // Điểu kiện để tính định thức là ma trận phải là ma trận vuông
+    if (m->row != m->column)
+    {
+        printf("\nError matrix! ROW is not equal to COLUMN");
+    }
+    else
+    {
+        for (int i = 0; i < m->row; i++)
+        {
+            for (int j = 0; j < m->column; j++)
+            {
+                m->M[i][j] = 0;
+                m->M[i][i] = 1;
+            }
         }
     }
 }
@@ -691,7 +720,14 @@ void Menu()
                 system("cls");
                 printf("Ma tran:\n");
                 Output(*m);
-                printf("\nDet A = %.2f\n", Det_A(m));
+                if (((float)Det_A(m) - (int)Det_A(m)) == 0)
+                {
+                    printf("\nDet A = %.0f\n", Det_A(m));
+                }
+                else
+                {
+                    printf("\nDet A = %.2f\n", Det_A(m));
+                }
             } break;
             case 0:
             {
